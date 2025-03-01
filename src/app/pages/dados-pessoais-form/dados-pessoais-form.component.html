@@ -83,6 +83,12 @@
               type="password"
               class="cadastro-form__input"
               formControlName="confirmaSenha">
+            <div *ngIf="dadosPessoaisForm.get('confirmaSenha')?.invalid && dadosPessoaisForm.get('confirmaSenha')?.touched" class="cadastro-form__error">
+              <span *ngIf="dadosPessoaisForm.get('confirmaSenha')?.errors?.['required']">Confirmação de senha é obrigatória</span>
+            </div>
+            <div *ngIf="dadosPessoaisForm.errors?.['senhasNaoIguais'] && dadosPessoaisForm.get('confirmaSenha')?.touched" class="cadastro-form__error">
+              As senhas não coincidem
+            </div>
           </div>
         </div>
 
