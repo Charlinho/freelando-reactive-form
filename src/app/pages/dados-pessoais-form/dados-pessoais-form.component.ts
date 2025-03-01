@@ -1,9 +1,18 @@
 import { CadastroService } from './../../shared/services/cadastro.service';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ButtonComponent } from '../../shared/components/button/button.component';
+import { AbstractControl, AbstractControlOptions, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ButtonComponent } from '../../shared/components/button/button.component';
+
+export const senhasIguaisValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+  const senha = control.get('senha');
+  const confirmaSenha = control.get('confirmaSenha');
+
+  return senha && confirmaSenha && senha.value === confirmaSenha.value
+    ? null
+    : { senhasNaoIguais: true };
+};
 
 @Component({
   selector: 'app-dados-pessoais-form',
@@ -47,7 +56,7 @@ export class DadosPessoaisFormComponent implements OnInit {
     { sigla: 'SP', nome: 'São Paulo' },
     { sigla: 'SE', nome: 'Sergipe' },
     { sigla: 'TO', nome: 'Tocantins' }
-  ]
+  ];
 
   constructor(
     private fb: FormBuilder,
@@ -56,6 +65,10 @@ export class DadosPessoaisFormComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    const formOptions: AbstractControlOptions = {
+      validators: senhasIguaisValidator
+    };
+
     this.dadosPessoaisForm = this.fb.group({
       nomeCompleto: ['', Validators.required],
       estado: ['', Validators.required],
@@ -63,7 +76,14 @@ export class DadosPessoaisFormComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       senha: ['', [Validators.required, Validators.minLength(6)]],
       confirmaSenha: ['', Validators.required]
-    })
+    }, formOptions);
+  }
+
+  senhasIguaisValidator(group: FormGroup): {[key: string]: any} | null {
+    const senha = group.get('senha')?.value;
+    const confirmaSenha = group.get('confirmaSenha')?.value;
+
+    return senha === confirmaSenha ? null : { senhasNaoIguais: true };
   }
 
   onAnterior(): void {
@@ -80,15 +100,14 @@ export class DadosPessoaisFormComponent implements OnInit {
     }
   }
 
-  private salvarDadosAtuais() {
+  private salvarDadosAtuais(): void {
     const formValue = this.dadosPessoaisForm.value;
-
     this.cadastroService.updateCadastroData({
       nomeCompleto: formValue.nomeCompleto,
       estado: formValue.estado,
       cidade: formValue.cidade,
       email: formValue.email,
       senha: formValue.senha
-    })
+    });
   }
 }
