@@ -78,7 +78,7 @@ export class DadosPessoaisFormComponent implements OnInit {
   onProximo(): void {
     if (this.dadosPessoaisForm.valid) {
       this.salvarDadosAtuais();
-      this.router.navigate(['/cadastro/confirmacao']);
+      this.router.navigate(['/cadastro/perfil']);
     } else {
       this.dadosPessoaisForm.markAllAsTouched();
     }
