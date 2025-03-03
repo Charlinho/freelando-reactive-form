@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { CadastroService } from '../../shared/services/cadastro.service';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { Habilidade } from '../../shared/models/habilidade.interface';
+import { ChipComponent } from '../../shared/components/chip/chip.component';
 
 
 @Component({
@@ -15,7 +16,8 @@ import { Habilidade } from '../../shared/models/habilidade.interface';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    ButtonComponent
+    ButtonComponent,
+    ChipComponent
   ],
   templateUrl: './perfil-form.component.html',
   styleUrls: ['./perfil-form.component.scss']
@@ -79,11 +81,21 @@ export class PerfilFormComponent implements OnInit {
     }
   }
 
+  toggleHabilidade(habilidade: Habilidade): void {
+    habilidade.selecionada = !habilidade.selecionada;
+
+    const habilidadesSelecionadas = this.habilidades
+      .filter(h => h.selecionada)
+      .map(h => h.nome);
+
+    this.perfilForm.patchValue({ habilidadesSelecionadas });
+  }
+
   private inicializarFormulario(): void {
     this.perfilForm = this.fb.group({
       foto: [''],
       resumo: [''],
-      habilidadesSelecionadas: [[]],
+      habilidadesSelecionadas: [[], Validators.required],
       idiomas: this.fb.array([]),
       portfolio: [''],
       linkedin: ['']
