@@ -22,7 +22,7 @@ import { Habilidade } from '../../shared/models/habilidade.interface';
 })
 export class PerfilFormComponent implements OnInit {
   perfilForm!: FormGroup;
-  fotoPreview: string | ArrayBuffer | undefined;
+  fotoPreview: string | ArrayBuffer | undefined | null;
 
   habilidades: Habilidade[] = [
     { nome: 'Fullstack', selecionada: false },
@@ -67,10 +67,22 @@ export class PerfilFormComponent implements OnInit {
     }
   }
 
+  onFotoSelecionada(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.fotoPreview = reader.result;
+        this.perfilForm.patchValue({ foto: reader.result });
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
   private inicializarFormulario(): void {
     this.perfilForm = this.fb.group({
       foto: [''],
-      resumo: ['', [Validators.required, Validators.maxLength(70)]],
+      resumo: [''],
       habilidadesSelecionadas: [[]],
       idiomas: this.fb.array([]),
       portfolio: [''],
