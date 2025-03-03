@@ -4,10 +4,10 @@ import { Habilidade } from '../models/habilidade.interface';
 import { Idioma } from '../models/idioma.interface';
 
 export interface CadastroData {
-  foto?: string | ArrayBuffer | undefined;
+  foto?: string | ArrayBuffer | null;
   resumo?: string;
-  habilidadesSelecionadas?: Array<Habilidade>,
-  idiomas?: Array<Idioma>,
+  habilidadesSelecionadas?: Array<Habilidade>;
+  idiomas?: Array<Idioma>;
   portfolio?: string;
   linkedin?: string;
   areaAtuacao?: string;

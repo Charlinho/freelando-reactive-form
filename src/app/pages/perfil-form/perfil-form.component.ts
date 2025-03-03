@@ -1,4 +1,3 @@
-import { appConfig } from './../../app.config';
 import { CadastroService } from './../../shared/services/cadastro.service';
 
 import { Component, OnInit } from '@angular/core';
@@ -8,6 +7,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { Habilidade } from '../../shared/models/habilidade.interface';
 import { ChipComponent } from '../../shared/components/chip/chip.component';
+import { CadastroService } from '../../shared/services/cadastro.service';
 import { Router } from '@angular/router';
 
 
@@ -25,7 +25,7 @@ import { Router } from '@angular/router';
 })
 export class PerfilFormComponent implements OnInit {
   perfilForm!: FormGroup;
-  fotoPreview: string | ArrayBuffer | undefined;
+  fotoPreview: string | ArrayBuffer | undefined | null;
 
   habilidades: Habilidade[] = [
     { nome: 'Fullstack', selecionada: false },
@@ -50,8 +50,8 @@ export class PerfilFormComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private router: Router,
-    private cadastroService: CadastroService
+    private cadastroService: CadastroService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -70,6 +70,18 @@ export class PerfilFormComponent implements OnInit {
     }
   }
 
+  onFotoSelecionada(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.fotoPreview = reader.result;
+        this.perfilForm.patchValue({ foto: reader.result });
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
   private inicializarFormulario(): void {
     this.perfilForm = this.fb.group({
       foto: [''],
@@ -78,7 +90,7 @@ export class PerfilFormComponent implements OnInit {
       idiomas: this.fb.array([]),
       portfolio: [''],
       linkedin: ['']
-    })
+    });
   }
 
   private salvarDadosAtuais(): void {
@@ -91,7 +103,6 @@ export class PerfilFormComponent implements OnInit {
       idiomas: [],
       portfolio: formValue.portfolio,
       linkedin: formValue.linkedin
-    })
-
+    });
   }
 }
