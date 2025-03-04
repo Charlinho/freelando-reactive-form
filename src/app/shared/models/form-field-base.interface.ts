@@ -8,4 +8,5 @@ export interface FormFieldBase {
   validators?: any[];
   asyncValidators?: any[];
   width?: 'full' | 'half';
+  dependsOn?: string;
 }
