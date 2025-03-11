@@ -7,7 +7,6 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { Habilidade } from '../../shared/models/habilidade.interface';
 import { ChipComponent } from '../../shared/components/chip/chip.component';
-import { CadastroService } from '../../shared/services/cadastro.service';
 import { Router } from '@angular/router';
 
 
@@ -80,6 +79,14 @@ export class PerfilFormComponent implements OnInit {
       };
       reader.readAsDataURL(file);
     }
+  }
+
+  toggleHabilidade(habilidade: Habilidade): void {
+    habilidade.selecionada = !habilidade.selecionada;
+
+    const habilidadesSelecionadas = this.habilidades.filter(h => h.selecionada).map(h => h.nome);
+
+    this.perfilForm.patchValue({ habilidadesSelecionadas });
   }
 
   private inicializarFormulario(): void {
